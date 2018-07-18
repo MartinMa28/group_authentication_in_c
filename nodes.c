@@ -55,6 +55,7 @@ int main()
             printf("process %d received x: %f, y: %f\n", i, xy[0], xy[1]);
             printf("%d bytes in total\n", c_rev);
             sleep(5);
+            exit(0);
         }
     }
 

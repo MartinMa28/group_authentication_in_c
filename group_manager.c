@@ -189,7 +189,7 @@ int main()
     struct sockaddr_in client_addr;
     client_addr.sin_family = AF_INET;
     client_addr.sin_port = htons(9001);
-    client_addr.sin_addr.s_addr = ntohl(0xC0A80005);
+    client_addr.sin_addr.s_addr = ntohl(0xC0A80007);
     //client_addr.sin_addr.s_addr = htonl(INADDR_ANY);
     int client_addr_len;
     client_addr_len = sizeof(client_addr);
@@ -216,7 +216,7 @@ int main()
         xy[0] = x[0];
         xy[1] = y[1];
         count = send(client_socket, xy, sizeof(xy), 0);
-        printf("Group manager sent a pair of x and y to a node, %d bytes in total.", count);
+        printf("Group manager sent a pair of x and y to a node, %d bytes in total.\n", count);
     }
     close(server_socket);
     close(client_socket);

@@ -6,6 +6,7 @@
 
 #include<netinet/in.h>
 #include<unistd.h>
+#include<sys/wait.h>
 
 int main()
 {
@@ -33,9 +34,39 @@ int main()
     int term_buf[1];
     count = recv(net_socket, term_buf, sizeof(term_buf), 0);
     int term = term_buf[0];
-    printf("%d", term);
+    printf("\n%d devices in total\n", term);
 
-    
+    int i;
+    pid_t *pids = malloc(sizeof(pid_t) * term);
+    for(i=0;i<term;i++)
+    {
+        pids[i] = fork();
+        if(pids[i] < 0)
+        {
+            perror("fork() error!\n");
+            exit(-1);
+        }
+        else if(pids[i] == 0)
+        {
+            // just in the newly created child process
+            double xy[2];
+            int c_rev;
+            c_rev = recv(net_socket, xy, sizeof(xy), 0);
+            printf("process %d received x: %f, y: %f\n", i, xy[0], xy[1]);
+            printf("%d bytes in total\n", c_rev);
+            sleep(5);
+        }
+    }
+
+    pid_t child_id;
+    int status;
+    int n = term;
+    while(n>0)
+    {
+        child_id = wait(&status);
+        printf("Child with PID %ld exited with status 0x%x.\n", (long)child_id, status);
+        n--;
+    }
     // int rand_buf[10];
     // int count;
     // int i;

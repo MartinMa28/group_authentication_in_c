@@ -210,16 +210,16 @@ int main()
     // count = send(client_socket, y, sizeof(y), 0);
     // printf("Group manager sent y to nodes, %d bytes in total.\n", count);
 
-    // double xy[2];
-    // for(i=0;i<term;i++)
-    // {
-    //     xy[0] = x[0];
-    //     xy[1] = y[1];
-    //     count = send(client_socket, xy, sizeof(xy), 0);
-    //     printf("Group manager sent a pair of x and y to a node, %d bytes in total.", count);
-    // }
-    // close(server_socket);
-    // close(client_socket);
+    double xy[2];
+    for(i=0;i<term;i++)
+    {
+        xy[0] = x[0];
+        xy[1] = y[1];
+        count = send(client_socket, xy, sizeof(xy), 0);
+        printf("Group manager sent a pair of x and y to a node, %d bytes in total.", count);
+    }
+    close(server_socket);
+    close(client_socket);
 
     return 0;
 }

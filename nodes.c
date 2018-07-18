@@ -8,6 +8,12 @@
 #include<unistd.h>
 #include<sys/wait.h>
 
+struct msg_buf
+{
+    long mesg_type;
+    char mesg_text[100];
+};
+
 int main()
 {
     // create a socket, 0 means using TCP by default
@@ -49,10 +55,10 @@ int main()
         else if(pids[i] == 0)
         {
             // just in the newly created child process
-            double xy[2];
+            double xy[3];
             int c_rev;
             c_rev = recv(net_socket, xy, sizeof(xy), 0);
-            printf("process %d received x: %f, y: %f\n", i, xy[0], xy[1]);
+            printf("process %d received x: %f, y: %f, constant %f\n", i, xy[1], xy[2], xy[0]);
             printf("%d bytes in total\n", c_rev);
             sleep(5);
             exit(0);

@@ -218,7 +218,7 @@ int main()
         xy[1] = x[i];
         xy[2] = y[i];
         count = send(client_socket, xy, sizeof(xy), 0);
-        printf("Group manager sent a pair of x:%f and y:%f to a node, %d bytes in total.\n", xy[0], xy[1], count);
+        printf("Group manager sent a pair of x:%f and y:%f to a node, %d bytes in total.\n", xy[1], xy[2], count);
     }
     close(server_socket);
     close(client_socket);

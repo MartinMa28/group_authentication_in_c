@@ -61,6 +61,15 @@ int main()
             printf("process %d received x: %f, y: %f, constant %f\n", i, xy[1], xy[2], xy[0]);
             printf("%d bytes in total\n", c_rev);
             sleep(5);
+            FILE *fptr;
+            fptr = fopen("data.txt", "a");
+            if(fptr == NULL)
+            {
+                perror("fopen error\n");
+                exit(-1);
+            }
+            fprintf(fptr, "x: %f, y: %f\n", xy[1], xy[2]);
+            fclose(fptr);
             exit(0);
         }
     }

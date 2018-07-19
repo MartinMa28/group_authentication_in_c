@@ -7,6 +7,7 @@
 #include<netinet/in.h>
 #include<unistd.h>
 #include<sys/wait.h>
+#include<pthread.h>
 
 struct msg_buf
 {
@@ -19,6 +20,46 @@ struct point
     double x;
     double y;
 };
+
+struct l_i_args
+{
+    int n;
+    double *x;
+    double *y;
+    double a;
+    double *r;
+};
+
+void * pthread_lagrange_interpolation(void *arg)
+{
+    //int n, double *x, double *y, double a
+    struct l_i_args *li_arg = (struct l_i_args *)arg;
+    int n = li_arg->n;
+    double *x = li_arg->x;
+    double *y = li_arg->y;
+    double a = li_arg->a;
+    double *r = li_arg->r;
+
+    double numer = 1,denomi = 1,k = 0;
+    int i, j;
+
+    for(i=0;i<n;i++)
+    {
+        numer = 1;
+        denomi = 1;
+        for(j=0;j<n;j++)
+        {
+            if(j!=i)
+            {
+                numer = numer * (a - x[j]);
+                denomi = denomi * (x[i] - x[j]);
+            }
+        }
+        k = k + y[i]*(numer/denomi);
+    }
+
+    *r = k;
+}
 
 int main()
 {
@@ -93,35 +134,7 @@ int main()
         printf("Child with PID %ld exited with status 0x%x.\n", (long)child_id, status);
         n--;
     }
-    // int rand_buf[10];
-    // int count;
-    // int i;
-
-    // int child = fork();
-    // if(child < 0)
-    // {
-    //     perror("fork error!");
-    // }
-    // else if(child == 0)
-    // {
-    //     // in the children process
-    //     count = recv(net_socket, rand_buf, sizeof(rand_buf), 0);
-    //     for(i=0;i<10;i++)
-    //     {
-    //         printf("%d\n", rand_buf[i]);
-    //     }
-    //     printf("%d bytes in total\n", count);
-    // }
-    // else
-    // {
-    //     // in the parent process, in which case, child == the PID of the children process
-    //     count = recv(net_socket, rand_buf, sizeof(rand_buf), 0);
-    //     for(i=0;i<10;i++)
-    //     {
-    //         printf("%d\n", rand_buf[i]);
-    //     }
-    //     printf("%d bytes in total\n", count);
-    // }
+    
     FILE *fptr_read;
     fptr_read = fopen("data.bin", "rb");
     if(fptr_read == NULL)
@@ -130,14 +143,45 @@ int main()
         exit(-1);
     }
     struct point p_read;
+    double *x = malloc(sizeof(double) * term);
+    double *y = malloc(sizeof(double) * term);
+
     for(i=0;i<term;i++)
     {
         fread(&p_read, sizeof(p_read), 1, fptr_read);
-        printf("x%d: %f, y%d: %f\n", i, p_read.x, i, p_read.y);
+        x[i] = p_read.x;
+        y[i] = p_read.y;
+        printf("x%d: %f, y%d: %f\n", i, x[i], i, y[i]);
     }
     fclose(fptr_read);
     // close the socket
     close(net_socket);
+
+    // simulate group authentication by multithreading
+    pthread_t *tid = malloc(sizeof(pthread_t) * term);
+    struct l_i_args *arg = malloc(sizeof(struct l_i_args) * term);
+    double *result = malloc(sizeof(double) * term);
+
+    for(i = 0; i < term; i++)
+    {
+        //arg[i] = {GROUP_SIZE, x, y, 0, &result[i]};
+        arg[i].n = term;
+        arg[i].x = x;
+        arg[i].y = y;
+        arg[i].a = 0;
+        arg[i].r = &result[i];
+        pthread_create(&tid[i], NULL, pthread_lagrange_interpolation,(void *)(&arg[i]));
+    }
+    
+    for(i = 0; i < term; i++)
+    {
+        pthread_join(tid[i], NULL);
+    }
+
+    for(i = 0; i < term; i++)
+    {
+        printf("thread%d %f\n", i, result[i]);
+    }
 
     return 0;
 }

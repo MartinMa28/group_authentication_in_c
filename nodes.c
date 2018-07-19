@@ -14,6 +14,12 @@ struct msg_buf
     char mesg_text[100];
 };
 
+struct point
+{
+    double x;
+    double y;
+};
+
 int main()
 {
     // create a socket, 0 means using TCP by default
@@ -62,13 +68,17 @@ int main()
             printf("%d bytes in total\n", c_rev);
             sleep(5);
             FILE *fptr;
-            fptr = fopen("data.txt", "a");
+            fptr = fopen("data.bin", "ab");
             if(fptr == NULL)
             {
                 perror("fopen error\n");
                 exit(-1);
             }
-            fprintf(fptr, "x: %f, y: %f\n", xy[1], xy[2]);
+            struct point p;
+            p.x = xy[1];
+            p.y = xy[2];
+            //fprintf(fptr, "x: %f, y: %f\n", xy[1], xy[2]);
+            fwrite(&p, sizeof(p), 1, fptr);
             fclose(fptr);
             exit(0);
         }
@@ -112,7 +122,20 @@ int main()
     //     }
     //     printf("%d bytes in total\n", count);
     // }
-    
+    FILE *fptr_read;
+    fptr_read = fopen("data.bin", "rb");
+    if(fptr_read == NULL)
+    {
+        perror("fopen error\n");
+        exit(-1);
+    }
+    struct point p_read;
+    for(i=0;i<term;i++)
+    {
+        fread(&p_read, sizeof(p_read), 1, fptr_read);
+        printf("x%d: %f, y%d: %f\n", i, p_read.x, i, p_read.y);
+    }
+    fclose(fptr_read);
     // close the socket
     close(net_socket);
 

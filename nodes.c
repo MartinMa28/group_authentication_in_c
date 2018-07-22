@@ -85,20 +85,8 @@ int main()
 {
     // create a socket, 0 means using TCP by default
     int net_socket;
-    //net_socket = socket(AF_INET, SOCK_STREAM, 0);
     net_socket = socket_create();
 
-    // specify an address for the socket
-    // struct sockaddr_in server_addr;
-    // server_addr.sin_family = AF_INET;
-    // server_addr.sin_port = htons(9002);
-    // server_addr.sin_addr.s_addr = htonl(0xC0A80009);   
-    // //server_addr.sin_addr.s_addr = htonl(INADDR_ANY);
-
-    // int connection_status = connect(net_socket, (struct sockaddr *)&server_addr, sizeof(server_addr));
-    // // check for error with the connection
-    // if(connection_status == -1)
-    //     printf("There was an error making a connection to the remote socket.\n");
     if(socket_connect(net_socket) == -1)
     {
         perror(" connect() error \n");
@@ -146,7 +134,7 @@ int main()
                 struct point p;
                 p.x = xy[1];
                 p.y = xy[2];
-                //fprintf(fptr, "x: %f, y: %f\n", xy[1], xy[2]);
+                
                 fwrite(&p, sizeof(p), 1, fptr);
                 fclose(fptr);
             }
@@ -161,7 +149,7 @@ int main()
                 struct point p;
                 p.x = xy[1];
                 p.y = xy[2];
-                //fprintf(fptr, "x: %f, y: %f\n", xy[1], xy[2]);
+
                 fwrite(&p, sizeof(p), 1, fptr);
                 fclose(fptr);
             }
@@ -208,7 +196,6 @@ int main()
 
     for(i = 0; i < term; i++)
     {
-        //arg[i] = {GROUP_SIZE, x, y, 0, &result[i]};
         arg[i].n = term;
         arg[i].x = x;
         arg[i].y = y;

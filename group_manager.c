@@ -8,6 +8,7 @@
 #include<sys/socket.h>
 
 #include<netinet/in.h>
+#include<arpa/inet.h>
 #include<unistd.h>
 
 
@@ -149,7 +150,7 @@ int socket_bind(int descriptor)
     server_addr.sin_family = AF_INET;
     server_addr.sin_port = htons(local_port);
     server_addr.sin_addr.s_addr = htons(INADDR_ANY);
-
+    
     ret_val = bind(descriptor, (struct sockaddr *)&server_addr, sizeof(server_addr));
     return ret_val;
 }
@@ -191,25 +192,7 @@ int main()
         printf("x: %f, y: %f\n", x[i], y[i]);
     }
 
-
-    // // create server socket
-    // int server_socket;
-    // server_socket = socket(AF_INET, SOCK_STREAM, 0);
-
-    // // define the server address
-    // struct sockaddr_in server_addr;
-    // server_addr.sin_family = AF_INET;
-    // server_addr.sin_port = htons(9002);
-    // server_addr.sin_addr.s_addr = htonl(INADDR_ANY);   //0x000000000
-
-    // // bind the socket to specified IP address and port
-    // int bind_status = bind(server_socket, (struct sockaddr *)&server_addr, sizeof(server_addr));
-    
-    // if (bind_status == -1)
-    // {
-    //     perror("There was an error when binding the socket to specified IP address and port.\n");
-    //     exit(-1);
-    // }    
+  
     int server_socket = socket_create();
     
     if(socket_bind(server_socket) == -1)
@@ -221,16 +204,6 @@ int main()
     listen(server_socket, 5);    // server socket listens on other sockets from client side
 
     int client_socket;
-    // // the server accepts a socket from an incoming client connection
-    // struct sockaddr_in client_addr;
-    // client_addr.sin_family = AF_INET;
-    // client_addr.sin_port = htons(9001);
-    // //client_addr.sin_addr.s_addr = ntohl(0xC0A80007);
-    // client_addr.sin_addr.s_addr = htonl(INADDR_ANY);
-    // int client_addr_len;
-    // client_addr_len = sizeof(client_addr);
-    // //client_socket = accept(server_socket, NULL, NULL);
-    // client_socket = accept(server_socket, (struct sockaddr *) &client_addr, &client_addr_len);
     client_socket = socket_accept(server_socket);
 
     char server_recv[256];

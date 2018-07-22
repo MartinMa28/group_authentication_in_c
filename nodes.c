@@ -109,18 +109,36 @@ int main()
             printf("%d bytes in total\n", c_rev);
             sleep(5);
             FILE *fptr;
-            fptr = fopen("data.bin", "ab");
-            if(fptr == NULL)
+            if(i == 0)
             {
-                perror("fopen error\n");
-                exit(-1);
+                fptr = fopen("data.bin", "wb");
+                if(fptr == NULL)
+                {
+                    perror("fopen error\n");
+                    exit(-1);
+                }
+                struct point p;
+                p.x = xy[1];
+                p.y = xy[2];
+                //fprintf(fptr, "x: %f, y: %f\n", xy[1], xy[2]);
+                fwrite(&p, sizeof(p), 1, fptr);
+                fclose(fptr);
             }
-            struct point p;
-            p.x = xy[1];
-            p.y = xy[2];
-            //fprintf(fptr, "x: %f, y: %f\n", xy[1], xy[2]);
-            fwrite(&p, sizeof(p), 1, fptr);
-            fclose(fptr);
+            else
+            {
+                fptr = fopen("data.bin", "ab");
+                if(fptr == NULL)
+                {
+                    perror("fopen error\n");
+                    exit(-1);
+                }
+                struct point p;
+                p.x = xy[1];
+                p.y = xy[2];
+                //fprintf(fptr, "x: %f, y: %f\n", xy[1], xy[2]);
+                fwrite(&p, sizeof(p), 1, fptr);
+                fclose(fptr);
+            }
             exit(0);
         }
     }
@@ -189,6 +207,6 @@ int main()
     free(tid);
     free(arg);
     free(result);
-    
+
     return 0;
 }

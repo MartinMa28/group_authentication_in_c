@@ -222,6 +222,8 @@ int main()
     }
     close(server_socket);
     close(client_socket);
-
+    free(poly);
+    free(x);
+    free(y);
     return 0;
 }

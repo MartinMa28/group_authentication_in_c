@@ -183,5 +183,12 @@ int main()
         printf("thread%d %f\n", i, result[i]);
     }
 
+    free(pids);
+    free(x);
+    free(y);
+    free(tid);
+    free(arg);
+    free(result);
+    
     return 0;
 }

@@ -7,6 +7,8 @@
 #include<netinet/in.h>
 #include<unistd.h>
 #include<sys/wait.h>
+#include<arpa/inet.h>
+
 #include<pthread.h>
 
 struct msg_buf
@@ -61,23 +63,47 @@ void * pthread_lagrange_interpolation(void *arg)
     *r = k;
 }
 
+int socket_create()
+{
+    int socket_descriptor = socket(AF_INET, SOCK_STREAM, 0);
+    return socket_descriptor;
+}
+
+int socket_connect(int descriptor)
+{
+    int ret_val = -1;
+    struct sockaddr_in server_addr;
+    server_addr.sin_family = AF_INET;
+    server_addr.sin_port = htons(9001);
+    server_addr.sin_addr.s_addr = inet_addr("192.168.0.9");
+
+    ret_val = connect(descriptor, (struct sockaddr *)&server_addr, sizeof(server_addr));
+    return ret_val;
+}
+
 int main()
 {
     // create a socket, 0 means using TCP by default
     int net_socket;
-    net_socket = socket(AF_INET, SOCK_STREAM, 0);
+    //net_socket = socket(AF_INET, SOCK_STREAM, 0);
+    net_socket = socket_create();
 
     // specify an address for the socket
-    struct sockaddr_in server_addr;
-    server_addr.sin_family = AF_INET;
-    server_addr.sin_port = htons(9002);
-    server_addr.sin_addr.s_addr = htonl(0xC0A80009);   
-    //server_addr.sin_addr.s_addr = htonl(INADDR_ANY);
+    // struct sockaddr_in server_addr;
+    // server_addr.sin_family = AF_INET;
+    // server_addr.sin_port = htons(9002);
+    // server_addr.sin_addr.s_addr = htonl(0xC0A80009);   
+    // //server_addr.sin_addr.s_addr = htonl(INADDR_ANY);
 
-    int connection_status = connect(net_socket, (struct sockaddr *)&server_addr, sizeof(server_addr));
-    // check for error with the connection
-    if(connection_status == -1)
-        printf("There was an error making a connection to the remote socket.\n");
+    // int connection_status = connect(net_socket, (struct sockaddr *)&server_addr, sizeof(server_addr));
+    // // check for error with the connection
+    // if(connection_status == -1)
+    //     printf("There was an error making a connection to the remote socket.\n");
+    if(socket_connect(net_socket) == -1)
+    {
+        perror(" connect() error \n");
+        exit(-1);
+    }
     
     char connect_info[256] = "connect to server\n";
     send(net_socket, connect_info, sizeof(connect_info), 0);

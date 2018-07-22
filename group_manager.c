@@ -134,6 +134,35 @@ double* generate_normal_distribution(int n)
     return values;
 }
 
+int socket_create()
+{
+    int socket_descriptor = socket(AF_INET, SOCK_STREAM, 0);
+    return socket_descriptor;
+}
+
+int socket_bind(int descriptor)
+{
+    int ret_val = -1;
+    int local_port = 9001;
+    struct sockaddr_in server_addr;
+
+    server_addr.sin_family = AF_INET;
+    server_addr.sin_port = htons(local_port);
+    server_addr.sin_addr.s_addr = htons(INADDR_ANY);
+
+    ret_val = bind(descriptor, (struct sockaddr *)&server_addr, sizeof(server_addr));
+    return ret_val;
+}
+
+int socket_accept(int descriptor)
+{
+    //struct sockaddr_in client_addr;
+    int client_addr_len = sizeof(struct sockaddr_in);
+
+    int new_socket = accept(descriptor, (struct sockaddr *)NULL, (socklen_t *)&client_addr_len);
+    return new_socket;
+}
+
 int main()
 {
     int term = 0;
@@ -162,39 +191,47 @@ int main()
         printf("x: %f, y: %f\n", x[i], y[i]);
     }
 
-    // double const_coef;
-    // const_coef = lagrange_interpolation(term, x, y, 0);
-    // printf("constant coefficient = %f\n", const_coef);
 
-    // create server socket
-    int server_socket;
-    server_socket = socket(AF_INET, SOCK_STREAM, 0);
+    // // create server socket
+    // int server_socket;
+    // server_socket = socket(AF_INET, SOCK_STREAM, 0);
 
-    // define the server address
-    struct sockaddr_in server_addr;
-    server_addr.sin_family = AF_INET;
-    server_addr.sin_port = htons(9002);
-    server_addr.sin_addr.s_addr = htonl(INADDR_ANY);   //0x000000000
+    // // define the server address
+    // struct sockaddr_in server_addr;
+    // server_addr.sin_family = AF_INET;
+    // server_addr.sin_port = htons(9002);
+    // server_addr.sin_addr.s_addr = htonl(INADDR_ANY);   //0x000000000
 
-    // bind the socket to specified IP address and port
-    int bind_status = bind(server_socket, (struct sockaddr *)&server_addr, sizeof(server_addr));
+    // // bind the socket to specified IP address and port
+    // int bind_status = bind(server_socket, (struct sockaddr *)&server_addr, sizeof(server_addr));
     
-    if (bind_status == -1)
-        printf("There was an error when binding the socket to specified IP address and port.\n");
+    // if (bind_status == -1)
+    // {
+    //     perror("There was an error when binding the socket to specified IP address and port.\n");
+    //     exit(-1);
+    // }    
+    int server_socket = socket_create();
+    
+    if(socket_bind(server_socket) == -1)
+    {
+        perror(" bind() error \n");
+        exit(-1);
+    }
 
     listen(server_socket, 5);    // server socket listens on other sockets from client side
 
     int client_socket;
-    // the server accepts a socket from an incoming client connection
-    struct sockaddr_in client_addr;
-    client_addr.sin_family = AF_INET;
-    client_addr.sin_port = htons(9001);
-    client_addr.sin_addr.s_addr = ntohl(0xC0A80007);
-    //client_addr.sin_addr.s_addr = htonl(INADDR_ANY);
-    int client_addr_len;
-    client_addr_len = sizeof(client_addr);
-    //client_socket = accept(server_socket, NULL, NULL);
-    client_socket = accept(server_socket, (struct sockaddr *) &client_addr, &client_addr_len);
+    // // the server accepts a socket from an incoming client connection
+    // struct sockaddr_in client_addr;
+    // client_addr.sin_family = AF_INET;
+    // client_addr.sin_port = htons(9001);
+    // //client_addr.sin_addr.s_addr = ntohl(0xC0A80007);
+    // client_addr.sin_addr.s_addr = htonl(INADDR_ANY);
+    // int client_addr_len;
+    // client_addr_len = sizeof(client_addr);
+    // //client_socket = accept(server_socket, NULL, NULL);
+    // client_socket = accept(server_socket, (struct sockaddr *) &client_addr, &client_addr_len);
+    client_socket = socket_accept(server_socket);
 
     char server_recv[256];
     int count = recv(client_socket, server_recv, sizeof(server_recv), 0);
@@ -203,12 +240,6 @@ int main()
     int term_buf[1];
     term_buf[0] = term;
     send(client_socket, term_buf, sizeof(term_buf), 0);
-
-    // count = send(client_socket, x, sizeof(x), 0);
-    // printf("Group manager sent x to nodes, %d bytes in total.\n", count);
-
-    // count = send(client_socket, y, sizeof(y), 0);
-    // printf("Group manager sent y to nodes, %d bytes in total.\n", count);
 
     double xy[3];
     double const_coef = compute(poly, 0);

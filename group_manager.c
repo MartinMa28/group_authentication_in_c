@@ -222,8 +222,13 @@ int main()
     }
 
     // encrypt all of tokens (y)
-    sm4_enc(y, term);
-    read_cipher(y, term);
+    // sm4_enc(y, term);
+    // read_cipher(y, term);
+    // for(i=0;i<term;i++)
+    // {
+    //     printf("%f ", y[i]);
+    // }
+    // printf("\n");
 
   
     int server_socket = socket_create();

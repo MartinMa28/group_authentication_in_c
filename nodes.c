@@ -81,6 +81,23 @@ int socket_connect(int descriptor)
     return ret_val;
 }
 
+void sm4_dec(double *tokens, int term)
+{
+    int i;
+    //double *y = malloc(sizeof(double) * term);
+
+    FILE *fptr;
+    fptr = fopen("dec_msg", "rb");
+
+    system("./decrypt.sh");
+
+    for(i=0;i<term;i++)
+    {
+        fread(&tokens[i], sizeof(double), 1, fptr);
+    }
+    fclose(fptr);
+}
+
 int main()
 {
     // create a socket, 0 means using TCP by default

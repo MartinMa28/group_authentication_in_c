@@ -164,6 +164,35 @@ int socket_accept(int descriptor)
     return new_socket;
 }
 
+void sm4_enc(double *y, int term)
+{
+    int i;
+
+    FILE *fptr;
+    fptr = fopen("msg", "wb");
+    
+    for(i=0;i<term;i++)
+    {
+        fwrite(&y[i], sizeof(double), 1, fptr);
+    }
+    fclose(fptr);
+    
+    system("./encrypt.sh");
+}
+
+void read_cipher(double *y, int term)
+{
+    int i;
+    FILE *fptr;
+    fptr = fopen("msg", "rb");
+
+    for(i=0;i<term;i++)
+    {
+        fread(&y[i], sizeof(double), 1, fptr);
+    }
+    fclose(fptr);
+}
+
 int main()
 {
     int term = 0;
@@ -191,6 +220,10 @@ int main()
     {
         printf("x: %f, y: %f\n", x[i], y[i]);
     }
+
+    // encrypt all of tokens (y)
+    sm4_enc(y, term);
+    read_cipher(y, term);
 
   
     int server_socket = socket_create();

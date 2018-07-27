@@ -180,17 +180,20 @@ void sm4_enc(double *y, int term)
     system("./encrypt.sh");
 }
 
-void read_cipher(double *y, int term)
+void transfer_cipher()
 {
-    int i;
-    FILE *fptr;
-    fptr = fopen("msg", "rb");
+    // int i;
+    // FILE *fptr;
+    // fptr = fopen("enc_msg", "r");
 
-    for(i=0;i<term;i++)
-    {
-        fread(&y[i], sizeof(double), 1, fptr);
-    }
-    fclose(fptr);
+    // fgets(cipher,sizeof(cipher),fptr);
+    // for(i=0;i<term;i++)
+    // {
+    //     fread(&y[i], sizeof(double), 1, fptr);
+    // }
+    // fclose(fptr);
+    // printf("%s", cipher);
+    system("./auth_reply.sh");
 }
 
 int main()
@@ -221,9 +224,9 @@ int main()
         printf("x: %f, y: %f\n", x[i], y[i]);
     }
 
-    // encrypt all of tokens (y)
-    // sm4_enc(y, term);
-    // read_cipher(y, term);
+    //encrypt all of tokens (y)
+    sm4_enc(y, term);
+    transfer_cipher();
     // for(i=0;i<term;i++)
     // {
     //     printf("%f ", y[i]);
@@ -252,16 +255,18 @@ int main()
     term_buf[0] = term;
     send(client_socket, term_buf, sizeof(term_buf), 0);
 
-    double xy[3];
+    double xy[2];
     double const_coef = compute(poly, 0);
     for(i=0;i<term;i++)
     {
         xy[0] = const_coef;
         xy[1] = x[i];
-        xy[2] = y[i];
+        //xy[2] = y[i];
         count = send(client_socket, xy, sizeof(xy), 0);
         printf("Group manager sent a pair of x:%f and y:%f to a node, %d bytes in total.\n", xy[1], xy[2], count);
     }
+
+
     close(server_socket);
     close(client_socket);
     free(poly);

@@ -85,11 +85,9 @@ void sm4_dec(double *tokens, int term)
 {
     int i;
     //double *y = malloc(sizeof(double) * term);
-
+    system("./decrypt.sh");
     FILE *fptr;
     fptr = fopen("dec_msg", "rb");
-
-    system("./decrypt.sh");
 
     for(i=0;i<term;i++)
     {
@@ -98,6 +96,17 @@ void sm4_dec(double *tokens, int term)
     fclose(fptr);
 }
 
+void read_decryption(double *dec_y, int term)
+{
+    int i;
+    FILE *fp;
+    fp = fopen("dec_msg", "rb");
+    for(i=0;i<term;i++)
+    {
+        fread(&dec_y[i], sizeof(double), 1, fp);
+    }
+    fclose(fp);
+}
 int main()
 {
     // create a socket, 0 means using TCP by default
@@ -120,6 +129,9 @@ int main()
     int term = term_buf[0];
     printf("\n%d devices in total\n", term);
 
+    double *dec_y = malloc(sizeof(double) * term);
+    read_decryption(dec_y, term);
+
     int i;
     pid_t *pids = malloc(sizeof(pid_t) * term);
     for(i=0;i<term;i++)
@@ -133,11 +145,13 @@ int main()
         else if(pids[i] == 0)
         {
             // just in the newly created child process
-            double xy[3];
+            // xy saves x-coordinate and the constant coefficient
+            double xy[2];
             int c_rev;
             c_rev = recv(net_socket, xy, sizeof(xy), 0);
-            printf("process %d received x: %f, y: %f, constant %f\n", i, xy[1], xy[2], xy[0]);
+            printf("process %d received x: %f, constant %f\n", i, xy[1], xy[0]);
             printf("%d bytes in total\n", c_rev);
+            
             sleep(5);
             FILE *fptr;
             if(i == 0)
@@ -150,7 +164,8 @@ int main()
                 }
                 struct point p;
                 p.x = xy[1];
-                p.y = xy[2];
+                //p.y = xy[2];
+                p.y = dec_y[i];
                 
                 fwrite(&p, sizeof(p), 1, fptr);
                 fclose(fptr);

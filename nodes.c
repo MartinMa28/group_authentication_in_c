@@ -185,7 +185,8 @@ int main()
                 }
                 struct point p;
                 p.x = xy[1];
-                p.y = xy[2];
+                //p.y = xy[2];
+                p.y = dec_y[i];
 
                 fwrite(&p, sizeof(p), 1, fptr);
                 fclose(fptr);

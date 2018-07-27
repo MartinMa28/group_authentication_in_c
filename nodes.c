@@ -142,6 +142,7 @@ int main()
     for(i=0;i<term;i++)
     {
         pids[i] = fork();
+        sleep(1);
         if(pids[i] < 0)
         {
             perror("fork() error!\n");
@@ -157,7 +158,7 @@ int main()
             printf("process %d received x: %f, constant %f\n", i, xy[1], xy[0]);
             printf("%d bytes in total\n", c_rev);
             
-            sleep(5);
+            sleep(3);
             FILE *fptr;
             if(i == 0)
             {

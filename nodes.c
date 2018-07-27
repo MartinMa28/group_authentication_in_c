@@ -133,6 +133,11 @@ int main()
     sm4_dec(dec_y, term);
 
     int i;
+    for(i=0;i<term;i++)
+    {
+        printf("%f ", dec_y[i]);
+    }
+    printf("dec finished\n");
     pid_t *pids = malloc(sizeof(pid_t) * term);
     for(i=0;i<term;i++)
     {
@@ -195,7 +200,7 @@ int main()
     while(n>0)
     {
         child_id = wait(&status);
-        printf("Child with PID %ld exited with status 0x%x.\n", (long)child_id, status);
+        //printf("Child with PID %ld exited with status 0x%x.\n", (long)child_id, status);
         n--;
     }
     

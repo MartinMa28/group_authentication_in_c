@@ -96,17 +96,17 @@ void sm4_dec(double *tokens, int term)
     fclose(fptr);
 }
 
-void read_decryption(double *dec_y, int term)
-{
-    int i;
-    FILE *fp;
-    fp = fopen("dec_msg", "rb");
-    for(i=0;i<term;i++)
-    {
-        fread(&dec_y[i], sizeof(double), 1, fp);
-    }
-    fclose(fp);
-}
+// void read_decryption(double *dec_y, int term)
+// {
+//     int i;
+//     FILE *fp;
+//     fp = fopen("dec_msg", "rb");
+//     for(i=0;i<term;i++)
+//     {
+//         fread(&dec_y[i], sizeof(double), 1, fp);
+//     }
+//     fclose(fp);
+// }
 int main()
 {
     // create a socket, 0 means using TCP by default
@@ -130,7 +130,7 @@ int main()
     printf("\n%d devices in total\n", term);
 
     double *dec_y = malloc(sizeof(double) * term);
-    read_decryption(dec_y, term);
+    sm4_dec(dec_y, term);
 
     int i;
     pid_t *pids = malloc(sizeof(pid_t) * term);
@@ -166,7 +166,7 @@ int main()
                 p.x = xy[1];
                 //p.y = xy[2];
                 p.y = dec_y[i];
-                
+
                 fwrite(&p, sizeof(p), 1, fptr);
                 fclose(fptr);
             }

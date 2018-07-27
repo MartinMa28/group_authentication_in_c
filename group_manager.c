@@ -182,18 +182,7 @@ void sm4_enc(double *y, int term)
 
 void transfer_cipher()
 {
-    // int i;
-    // FILE *fptr;
-    // fptr = fopen("enc_msg", "r");
-
-    // fgets(cipher,sizeof(cipher),fptr);
-    // for(i=0;i<term;i++)
-    // {
-    //     fread(&y[i], sizeof(double), 1, fptr);
-    // }
-    // fclose(fptr);
-    // printf("%s", cipher);
-    system("./auth_reply.sh");
+    system("./auto_reply.sh");
 }
 
 int main()
@@ -263,7 +252,7 @@ int main()
         xy[1] = x[i];
         //xy[2] = y[i];
         count = send(client_socket, xy, sizeof(xy), 0);
-        printf("Group manager sent a pair of x:%f and y:%f to a node, %d bytes in total.\n", xy[1], xy[2], count);
+        printf("Group manager sent a pair of x:%f and constant c:%f to a node, %d bytes in total.\n", xy[1], xy[0], count);
     }
 
 

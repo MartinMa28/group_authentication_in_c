@@ -11,6 +11,7 @@
 
 #include<pthread.h>
 #include<unistd.h>
+#include<math.h>
 
 struct msg_buf
 {
@@ -100,6 +101,8 @@ void sm4_dec(double *tokens, int term)
 
 int main()
 {
+    int i;
+    double const_coef;
     // create a socket, 0 means using TCP by default
     int net_socket;
     net_socket = socket_create();
@@ -123,7 +126,7 @@ int main()
     double *dec_y = malloc(sizeof(double) * term);
     sm4_dec(dec_y, term);
 
-    int i;
+    
     for(i=0;i<term;i++)
     {
         printf("%f ", dec_y[i]);
@@ -146,6 +149,7 @@ int main()
             double xy[2];
             int c_rev;
             c_rev = recv(net_socket, xy, sizeof(xy), 0);
+            const_coef = xy[0];
             printf("process %d received x: %f, constant %f\n", i, xy[1], xy[0]);
             printf("%d bytes in total\n", c_rev);
             
@@ -241,6 +245,10 @@ int main()
 
     for(i = 0; i < term; i++)
     {
+        if(abs(const_coef - result[i]) < 0.0000001)
+        {
+            printf("thread%d is authenticated, ");
+        }
         printf("thread%d %f\n", i, result[i]);
     }
 

@@ -135,7 +135,7 @@ int main()
     pid_t *pids = malloc(sizeof(pid_t) * term);
     for(i=0;i<term;i++)
     {
-        usleep(100);
+        usleep(200 * 1000);  // 200 milliseconds, 200 * 10^3 microseconds
         pids[i] = fork();
         if(pids[i] < 0)
         {
@@ -153,7 +153,7 @@ int main()
             printf("process %d received x: %f, constant %f\n", i, xy[1], xy[0]);
             printf("%d bytes in total\n", c_rev);
             
-            sleep(3);
+            //sleep(3);
             FILE *fptr;
             if(i == 0)
             {
@@ -245,7 +245,7 @@ int main()
 
     for(i = 0; i < term; i++)
     {
-        if(abs(const_coef - result[i]) < 0.0000001)
+        if(abs(const_coef - result[i]) < 0.0001)
         {
             printf("thread%d is authenticated, ", i);
         }

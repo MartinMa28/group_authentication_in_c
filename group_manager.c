@@ -197,6 +197,7 @@ void generate_tokens()
     int coef;
     struct Node *poly = NULL;
     struct Node *cur = NULL;
+    char leap = 'c';
 
     for(i=0;i<term;i++)
     {
@@ -226,32 +227,61 @@ void generate_tokens()
         perror(" bind() error \n");
         exit(-1);
     }
-
     listen(server_socket, 5);    // server socket listens on other sockets from client side
 
     int client_socket;
-    client_socket = socket_accept(server_socket);
-
-    char server_recv[256];
-    int count = recv(client_socket, server_recv, sizeof(server_recv), 0);
-    printf("%s", server_recv);
-
-    int term_buf[1];
-    term_buf[0] = term;
-    send(client_socket, term_buf, sizeof(term_buf), 0);
-
-    double xy[2];
-    double const_coef = compute(poly, 0);
-    for(i=0;i<term;i++)
+    while(1)
     {
-        xy[0] = const_coef;
-        xy[1] = x[i];
-        //xy[2] = y[i];
-        count = send(client_socket, xy, sizeof(xy), 0);
-        printf("Group manager sent a pair of x:%f and constant c:%f to a node, %d bytes in total.\n", xy[1], xy[0], count);
+        client_socket = socket_accept(server_socket);
+
+        char server_recv[256];
+        int count = recv(client_socket, server_recv, sizeof(server_recv), 0);
+        printf("%s", server_recv);
+
+        int term_buf[1];
+        term_buf[0] = term;
+        send(client_socket, term_buf, sizeof(term_buf), 0);
+
+        double xy[2];
+        double const_coef = compute(poly, 0);
+        for(i=0;i<term;i++)
+        {
+            xy[0] = const_coef;
+            xy[1] = x[i];
+            //xy[2] = y[i];
+            count = send(client_socket, xy, sizeof(xy), 0);
+            printf("Group manager sent a pair of x:%f and constant c:%f to a node, %d bytes in total.\n", xy[1], xy[0], count);
+        }    
+        
+
+        printf("enter q to quit, any character to continue: ");
+        scanf(" %c", &leap);
+        if(leap == 'q')
+        {
+            break;
+        }
     }
 
+    // client_socket = socket_accept(server_socket);
 
+    // char server_recv[256];
+    // int count = recv(client_socket, server_recv, sizeof(server_recv), 0);
+    // printf("%s", server_recv);
+
+    // int term_buf[1];
+    // term_buf[0] = term;
+    // send(client_socket, term_buf, sizeof(term_buf), 0);
+
+    // double xy[2];
+    // double const_coef = compute(poly, 0);
+    // for(i=0;i<term;i++)
+    // {
+    //     xy[0] = const_coef;
+    //     xy[1] = x[i];
+    //     //xy[2] = y[i];
+    //     count = send(client_socket, xy, sizeof(xy), 0);
+    //     printf("Group manager sent a pair of x:%f and constant c:%f to a node, %d bytes in total.\n", xy[1], xy[0], count);
+    // }
     close(server_socket);
     close(client_socket);
     free(poly);
@@ -261,13 +291,15 @@ void generate_tokens()
 
 int main()
 {
-    char leap = 'c';
-    while(leap == 'c')
-    {
-        generate_tokens();
-        printf("tokens are created, enter q to quit, c to create again: ");
-        scanf("%c", &leap);
-    }
+    generate_tokens();
+    // char leap = 'c';
+    // while(leap == 'c')
+    // {
+    //     generate_tokens();
+    //     printf("enter q to quit, c to create again: ");
+    //     leap = getchar();
+    //     scanf("%c", &leap);
+    // }
     // int term = 0;
     // printf("enter the size of the group:");
     // scanf("%d", &term);

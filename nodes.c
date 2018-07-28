@@ -247,7 +247,7 @@ int main()
     {
         if(abs(const_coef - result[i]) < 0.0000001)
         {
-            printf("thread%d is authenticated, ");
+            printf("thread%d is authenticated, ", i);
         }
         printf("thread%d %f\n", i, result[i]);
     }

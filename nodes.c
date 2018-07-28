@@ -108,27 +108,43 @@ int main()
     int net_socket;
     net_socket = socket_create();
 
-    if(socket_connect(net_socket) == -1)
-    {
-        perror(" connect() error \n");
-        exit(-1);
-    }
+    // if(socket_connect(net_socket) == -1)
+    // {
+    //     perror(" connect() error \n");
+    //     exit(-1);
+    // }
     
-    char connect_info[256] = "connect to server\n";
-    send(net_socket, connect_info, sizeof(connect_info), 0);
-    printf("client reached the server\n");
+    // char connect_info[256] = "connect to server\n";
+    // send(net_socket, connect_info, sizeof(connect_info), 0);
+    // printf("client reached the server\n");
     
-    int count;
-    int term_buf[1];
-    count = recv(net_socket, term_buf, sizeof(term_buf), 0);
-    int term = term_buf[0];
-    printf("\n%d devices in total\n", term);
+    // int count;
+    // int term_buf[1];
+    // count = recv(net_socket, term_buf, sizeof(term_buf), 0);
+    // int term = term_buf[0];
+    // printf("\n%d devices in total\n", term);
 
     // double *dec_y = malloc(sizeof(double) * term);
     // sm4_dec(dec_y, term);
     //----------------------------------------------------------
     while(1)
     {
+        if(socket_connect(net_socket) == -1)
+        {
+            perror(" connect() error \n");
+            exit(-1);
+        }
+        
+        char connect_info[256] = "connect to server\n";
+        send(net_socket, connect_info, sizeof(connect_info), 0);
+        printf("client reached the server\n");
+        
+        int count;
+        int term_buf[1];
+        count = recv(net_socket, term_buf, sizeof(term_buf), 0);
+        int term = term_buf[0];
+        printf("\n%d devices in total\n", term);
+        
         double *dec_y = malloc(sizeof(double) * term);
         sm4_dec(dec_y, term);
         pid_t *pids = malloc(sizeof(pid_t) * term);

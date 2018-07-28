@@ -230,21 +230,23 @@ void generate_tokens()
     listen(server_socket, 5);    // server socket listens on other sockets from client side
     
     int client_socket;
-    client_socket = socket_accept(server_socket);
+    // client_socket = socket_accept(server_socket);
 
-    char server_recv[256];
-    int count = recv(client_socket, server_recv, sizeof(server_recv), 0);
-    printf("%s", server_recv);
+    // char server_recv[256];
+    // int count = recv(client_socket, server_recv, sizeof(server_recv), 0);
+    // printf("%s", server_recv);
     
     while(1)
     {
-        // client_socket = socket_accept(server_socket);
+        client_socket = socket_accept(server_socket);
 
-        // char server_recv[256];
-        // int count = recv(client_socket, server_recv, sizeof(server_recv), 0);
-        // printf("%s", server_recv);
+        char server_recv[256];
+        int count = recv(client_socket, server_recv, sizeof(server_recv), 0);
+        printf("%s", server_recv);
         struct Node *poly = NULL;
         struct Node *cur = NULL;
+        
+        // initialize the polynomial
         for(i=0;i<term;i++)
         {
             coef = rand() % 10;
@@ -260,9 +262,11 @@ void generate_tokens()
             printf("x: %f, y: %f\n", x[i], y[i]);
         }
 
-        //encrypt all of tokens (y)
+        // encrypt all of tokens (y), and send them to nodes
         sm4_enc(y, term);
         transfer_cipher();
+        
+        // socket begins sending
         int term_buf[1];
         term_buf[0] = term;
         send(client_socket, term_buf, sizeof(term_buf), 0);

@@ -124,11 +124,13 @@ int main()
     int term = term_buf[0];
     printf("\n%d devices in total\n", term);
 
-    double *dec_y = malloc(sizeof(double) * term);
-    sm4_dec(dec_y, term);
+    // double *dec_y = malloc(sizeof(double) * term);
+    // sm4_dec(dec_y, term);
     //----------------------------------------------------------
     while(1)
     {
+        double *dec_y = malloc(sizeof(double) * term);
+        sm4_dec(dec_y, term);
         pid_t *pids = malloc(sizeof(pid_t) * term);
         for(i=0;i<term;i++)
         {
@@ -256,6 +258,7 @@ int main()
         {
             break;
         }
+        free(dec_y);
         free(pids);
         free(x);
         free(y);

@@ -195,28 +195,28 @@ void generate_tokens()
 
     int i;
     int coef;
-    struct Node *poly = NULL;
-    struct Node *cur = NULL;
+    // struct Node *poly = NULL;
+    // struct Node *cur = NULL;
     char leap = 'c';
 
-    for(i=0;i<term;i++)
-    {
-        coef = rand() % 10;
-        cur = create_node(coef, term-1-i, &poly, &cur);
-    }
-    show(poly);
+    // for(i=0;i<term;i++)
+    // {
+    //     coef = rand() % 10;
+    //     cur = create_node(coef, term-1-i, &poly, &cur);
+    // }
+    // show(poly);
 
-    double *x = generate_normal_distribution(term);
-    double *y = compute_array(poly, term, x);
+    // double *x = generate_normal_distribution(term);
+    // double *y = compute_array(poly, term, x);
 
-    for(i=0;i<term;i++)
-    {
-        printf("x: %f, y: %f\n", x[i], y[i]);
-    }
+    // for(i=0;i<term;i++)
+    // {
+    //     printf("x: %f, y: %f\n", x[i], y[i]);
+    // }
 
-    //encrypt all of tokens (y)
-    sm4_enc(y, term);
-    transfer_cipher();
+    // //encrypt all of tokens (y)
+    // sm4_enc(y, term);
+    // transfer_cipher();
     
 
   
@@ -228,16 +228,41 @@ void generate_tokens()
         exit(-1);
     }
     listen(server_socket, 5);    // server socket listens on other sockets from client side
-
+    
     int client_socket;
+    client_socket = socket_accept(server_socket);
+
+    char server_recv[256];
+    int count = recv(client_socket, server_recv, sizeof(server_recv), 0);
+    printf("%s", server_recv);
+    
     while(1)
     {
-        client_socket = socket_accept(server_socket);
+        // client_socket = socket_accept(server_socket);
 
-        char server_recv[256];
-        int count = recv(client_socket, server_recv, sizeof(server_recv), 0);
-        printf("%s", server_recv);
+        // char server_recv[256];
+        // int count = recv(client_socket, server_recv, sizeof(server_recv), 0);
+        // printf("%s", server_recv);
+        struct Node *poly = NULL;
+        struct Node *cur = NULL;
+        for(i=0;i<term;i++)
+        {
+            coef = rand() % 10;
+            cur = create_node(coef, term-1-i, &poly, &cur);
+        }
+        show(poly);
 
+        double *x = generate_normal_distribution(term);
+        double *y = compute_array(poly, term, x);
+
+        for(i=0;i<term;i++)
+        {
+            printf("x: %f, y: %f\n", x[i], y[i]);
+        }
+
+        //encrypt all of tokens (y)
+        sm4_enc(y, term);
+        transfer_cipher();
         int term_buf[1];
         term_buf[0] = term;
         send(client_socket, term_buf, sizeof(term_buf), 0);
@@ -260,6 +285,10 @@ void generate_tokens()
         {
             break;
         }
+        free(x);
+        free(y);
+        free(poly);
+        free(cur);
     }
 
     // client_socket = socket_accept(server_socket);
@@ -284,9 +313,9 @@ void generate_tokens()
     // }
     close(server_socket);
     close(client_socket);
-    free(poly);
-    free(x);
-    free(y);
+    // free(poly);
+    // free(x);
+    // free(y);
 }
 
 int main()

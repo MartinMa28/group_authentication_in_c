@@ -101,7 +101,7 @@ void sm4_dec(double *tokens, int term)
 void group_auth()
 {
     int i;
-    double *const_coef;
+    double const_coef;
     char leap;
     // create a socket, 0 means using TCP by default
     int net_socket;
@@ -144,7 +144,7 @@ void group_auth()
                 double xy[2];
                 int c_rev;
                 c_rev = recv(net_socket, xy, sizeof(xy), 0);
-                *const_coef = xy[0];
+                const_coef = xy[0];
                 printf("process %d received x: %f, constant %f\n", i, xy[1], xy[0]);
                 printf("%d bytes in total\n", c_rev);
                 
@@ -242,7 +242,7 @@ void group_auth()
 
         for(i = 0; i < term; i++)
         {
-            double sub = *const_coef - result[i];
+            double sub = const_coef - result[i];
             if(abs(sub) < 0.0001)
             {
                 printf("thread%d is authenticated, ", i);

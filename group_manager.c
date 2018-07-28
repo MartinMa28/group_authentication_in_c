@@ -195,7 +195,30 @@ void generate_tokens()
 
     int i;
     int coef;
+    // struct Node *poly = NULL;
+    // struct Node *cur = NULL;
     char leap = 'c';
+
+    // for(i=0;i<term;i++)
+    // {
+    //     coef = rand() % 10;
+    //     cur = create_node(coef, term-1-i, &poly, &cur);
+    // }
+    // show(poly);
+
+    // double *x = generate_normal_distribution(term);
+    // double *y = compute_array(poly, term, x);
+
+    // for(i=0;i<term;i++)
+    // {
+    //     printf("x: %f, y: %f\n", x[i], y[i]);
+    // }
+
+    // //encrypt all of tokens (y)
+    // sm4_enc(y, term);
+    // transfer_cipher();
+    
+
   
     int server_socket = socket_create();
     
@@ -207,6 +230,12 @@ void generate_tokens()
     listen(server_socket, 5);    // server socket listens on other sockets from client side
     
     int client_socket;
+    // client_socket = socket_accept(server_socket);
+
+    // char server_recv[256];
+    // int count = recv(client_socket, server_recv, sizeof(server_recv), 0);
+    // printf("%s", server_recv);
+    
     while(1)
     {
         client_socket = socket_accept(server_socket);
@@ -266,15 +295,113 @@ void generate_tokens()
         free(cur);
     }
 
-    
+    // client_socket = socket_accept(server_socket);
+
+    // char server_recv[256];
+    // int count = recv(client_socket, server_recv, sizeof(server_recv), 0);
+    // printf("%s", server_recv);
+
+    // int term_buf[1];
+    // term_buf[0] = term;
+    // send(client_socket, term_buf, sizeof(term_buf), 0);
+
+    // double xy[2];
+    // double const_coef = compute(poly, 0);
+    // for(i=0;i<term;i++)
+    // {
+    //     xy[0] = const_coef;
+    //     xy[1] = x[i];
+    //     //xy[2] = y[i];
+    //     count = send(client_socket, xy, sizeof(xy), 0);
+    //     printf("Group manager sent a pair of x:%f and constant c:%f to a node, %d bytes in total.\n", xy[1], xy[0], count);
+    // }
     close(server_socket);
     close(client_socket);
-    
+    // free(poly);
+    // free(x);
+    // free(y);
 }
 
 int main()
 {
     generate_tokens();
+    // char leap = 'c';
+    // while(leap == 'c')
+    // {
+    //     generate_tokens();
+    //     printf("enter q to quit, c to create again: ");
+    //     leap = getchar();
+    //     scanf("%c", &leap);
+    // }
+    // int term = 0;
+    // printf("enter the size of the group:");
+    // scanf("%d", &term);
+
+    // srand(time(NULL));
+
+    // int i;
+    // int coef;
+    // struct Node *poly = NULL;
+    // struct Node *cur = NULL;
+
+    // for(i=0;i<term;i++)
+    // {
+    //     coef = rand() % 10;
+    //     cur = create_node(coef, term-1-i, &poly, &cur);
+    // }
+    // show(poly);
+
+    // double *x = generate_normal_distribution(term);
+    // double *y = compute_array(poly, term, x);
+
+    // for(i=0;i<term;i++)
+    // {
+    //     printf("x: %f, y: %f\n", x[i], y[i]);
+    // }
+
+    // //encrypt all of tokens (y)
+    // sm4_enc(y, term);
+    // transfer_cipher();
     
+
+  
+    // int server_socket = socket_create();
+    
+    // if(socket_bind(server_socket) == -1)
+    // {
+    //     perror(" bind() error \n");
+    //     exit(-1);
+    // }
+
+    // listen(server_socket, 5);    // server socket listens on other sockets from client side
+
+    // int client_socket;
+    // client_socket = socket_accept(server_socket);
+
+    // char server_recv[256];
+    // int count = recv(client_socket, server_recv, sizeof(server_recv), 0);
+    // printf("%s", server_recv);
+
+    // int term_buf[1];
+    // term_buf[0] = term;
+    // send(client_socket, term_buf, sizeof(term_buf), 0);
+
+    // double xy[2];
+    // double const_coef = compute(poly, 0);
+    // for(i=0;i<term;i++)
+    // {
+    //     xy[0] = const_coef;
+    //     xy[1] = x[i];
+    //     //xy[2] = y[i];
+    //     count = send(client_socket, xy, sizeof(xy), 0);
+    //     printf("Group manager sent a pair of x:%f and constant c:%f to a node, %d bytes in total.\n", xy[1], xy[0], count);
+    // }
+
+
+    // close(server_socket);
+    // close(client_socket);
+    // free(poly);
+    // free(x);
+    // free(y);
     return 0;
 }

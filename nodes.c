@@ -77,7 +77,7 @@ int socket_connect(int descriptor)
     struct sockaddr_in server_addr;
     server_addr.sin_family = AF_INET;
     server_addr.sin_port = htons(9001);
-    server_addr.sin_addr.s_addr = inet_addr("192.168.0.9");
+    server_addr.sin_addr.s_addr = inet_addr("192.168.0.10");
 
     ret_val = connect(descriptor, (struct sockaddr *)&server_addr, sizeof(server_addr));
     return ret_val;
@@ -127,11 +127,11 @@ int main()
     sm4_dec(dec_y, term);
 
     
-    for(i=0;i<term;i++)
-    {
-        printf("%f ", dec_y[i]);
-    }
-    printf("dec finished\n");
+    // for(i=0;i<term;i++)
+    // {
+    //     printf("%f ", dec_y[i]);
+    // }
+    // printf("dec finished\n");
     pid_t *pids = malloc(sizeof(pid_t) * term);
     for(i=0;i<term;i++)
     {

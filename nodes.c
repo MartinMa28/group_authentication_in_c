@@ -10,6 +10,7 @@
 #include<arpa/inet.h>
 
 #include<pthread.h>
+#include<unistd.h>
 
 struct msg_buf
 {
@@ -96,17 +97,7 @@ void sm4_dec(double *tokens, int term)
     fclose(fptr);
 }
 
-// void read_decryption(double *dec_y, int term)
-// {
-//     int i;
-//     FILE *fp;
-//     fp = fopen("dec_msg", "rb");
-//     for(i=0;i<term;i++)
-//     {
-//         fread(&dec_y[i], sizeof(double), 1, fp);
-//     }
-//     fclose(fp);
-// }
+
 int main()
 {
     // create a socket, 0 means using TCP by default
@@ -141,8 +132,8 @@ int main()
     pid_t *pids = malloc(sizeof(pid_t) * term);
     for(i=0;i<term;i++)
     {
+        usleep(100);
         pids[i] = fork();
-        sleep(1);
         if(pids[i] < 0)
         {
             perror("fork() error!\n");

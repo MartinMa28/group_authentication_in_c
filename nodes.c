@@ -106,7 +106,7 @@ int main()
     char leap;
     // create a socket, 0 means using TCP by default
     int net_socket;
-    net_socket = socket_create();
+    // net_socket = socket_create();
 
     // if(socket_connect(net_socket) == -1)
     // {
@@ -129,6 +129,7 @@ int main()
     //----------------------------------------------------------
     while(1)
     {
+        net_socket = socket_create();
         if(socket_connect(net_socket) == -1)
         {
             perror(" connect() error \n");
@@ -411,6 +412,6 @@ int main()
     // free(tid);
     // free(arg);
     // free(result);
-
+    
     return 0;
 }

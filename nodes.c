@@ -98,35 +98,14 @@ void sm4_dec(double *tokens, int term)
     fclose(fptr);
 }
 
-
-int main()
+void group_auth()
 {
     int i;
     double const_coef;
     char leap;
     // create a socket, 0 means using TCP by default
     int net_socket;
-    // net_socket = socket_create();
-
-    // if(socket_connect(net_socket) == -1)
-    // {
-    //     perror(" connect() error \n");
-    //     exit(-1);
-    // }
     
-    // char connect_info[256] = "connect to server\n";
-    // send(net_socket, connect_info, sizeof(connect_info), 0);
-    // printf("client reached the server\n");
-    
-    // int count;
-    // int term_buf[1];
-    // count = recv(net_socket, term_buf, sizeof(term_buf), 0);
-    // int term = term_buf[0];
-    // printf("\n%d devices in total\n", term);
-
-    // double *dec_y = malloc(sizeof(double) * term);
-    // sm4_dec(dec_y, term);
-    //----------------------------------------------------------
     while(1)
     {
         net_socket = socket_create();
@@ -263,11 +242,12 @@ int main()
 
         for(i = 0; i < term; i++)
         {
-            if(abs(const_coef - result[i]) < 0.0001)
+            double sub = const_coef - result[i];
+            if(abs(sub) < 0.0001)
             {
                 printf("thread%d is authenticated, ", i);
             }
-            printf("thread%d %f\n", i, result[i]);
+            printf("thread%d %f, sub %f\n", i, result[i], sub);
         }
         printf("group authentication finished, press r to authenticate again: ");
         scanf(" %c", &leap);
@@ -284,134 +264,11 @@ int main()
         free(result);
     }
     
-    // pid_t *pids = malloc(sizeof(pid_t) * term);
-    // for(i=0;i<term;i++)
-    // {
-    //     usleep(200 * 1000);  // 200 milliseconds, 200 * 10^3 microseconds
-    //     pids[i] = fork();
-    //     if(pids[i] < 0)
-    //     {
-    //         perror("fork() error!\n");
-    //         exit(-1);
-    //     }
-    //     else if(pids[i] == 0)
-    //     {
-    //         // just in the newly created child process
-    //         // xy saves x-coordinate and the constant coefficient
-    //         double xy[2];
-    //         int c_rev;
-    //         c_rev = recv(net_socket, xy, sizeof(xy), 0);
-    //         const_coef = xy[0];
-    //         printf("process %d received x: %f, constant %f\n", i, xy[1], xy[0]);
-    //         printf("%d bytes in total\n", c_rev);
-            
-    //         //sleep(3);
-    //         FILE *fptr;
-    //         if(i == 0)
-    //         {
-    //             fptr = fopen("data.bin", "wb");
-    //             if(fptr == NULL)
-    //             {
-    //                 perror("fopen error\n");
-    //                 exit(-1);
-    //             }
-    //             struct point p;
-    //             p.x = xy[1];
-    //             //p.y = xy[2];
-    //             p.y = dec_y[i];
+    close(net_socket);
+}
 
-    //             fwrite(&p, sizeof(p), 1, fptr);
-    //             fclose(fptr);
-    //         }
-    //         else
-    //         {
-    //             fptr = fopen("data.bin", "ab");
-    //             if(fptr == NULL)
-    //             {
-    //                 perror("fopen error\n");
-    //                 exit(-1);
-    //             }
-    //             struct point p;
-    //             p.x = xy[1];
-    //             //p.y = xy[2];
-    //             p.y = dec_y[i];
-
-    //             fwrite(&p, sizeof(p), 1, fptr);
-    //             fclose(fptr);
-    //         }
-    //         exit(0);
-    //     }
-    // }
-
-    // // close the socket
-    // close(net_socket);
-
-    // pid_t child_id;
-    // int status;
-    // int n = term;
-    // while(n>0)
-    // {
-    //     child_id = wait(&status);
-    //     //printf("Child with PID %ld exited with status 0x%x.\n", (long)child_id, status);
-    //     n--;
-    // }
-    
-    // FILE *fptr_read;
-    // fptr_read = fopen("data.bin", "rb");
-    // if(fptr_read == NULL)
-    // {
-    //     perror("fopen error\n");
-    //     exit(-1);
-    // }
-    // struct point p_read;
-    // double *x = malloc(sizeof(double) * term);
-    // double *y = malloc(sizeof(double) * term);
-
-    // for(i=0;i<term;i++)
-    // {
-    //     fread(&p_read, sizeof(p_read), 1, fptr_read);
-    //     x[i] = p_read.x;
-    //     y[i] = p_read.y;
-    //     printf("x%d: %f, y%d: %f\n", i, x[i], i, y[i]);
-    // }
-    // fclose(fptr_read);
-    
-
-    // // simulate group authentication by multithreading
-    // pthread_t *tid = malloc(sizeof(pthread_t) * term);
-    // struct l_i_args *arg = malloc(sizeof(struct l_i_args) * term);
-    // double *result = malloc(sizeof(double) * term);
-
-    // for(i = 0; i < term; i++)
-    // {
-    //     arg[i].n = term;
-    //     arg[i].x = x;
-    //     arg[i].y = y;
-    //     arg[i].a = 0;
-    //     arg[i].r = &result[i];
-    //     pthread_create(&tid[i], NULL, pthread_lagrange_interpolation,(void *)(&arg[i]));
-    // }
-    
-    // for(i = 0; i < term; i++)
-    // {
-    //     pthread_join(tid[i], NULL);
-    // }
-
-    // for(i = 0; i < term; i++)
-    // {
-    //     if(abs(const_coef - result[i]) < 0.0001)
-    //     {
-    //         printf("thread%d is authenticated, ", i);
-    //     }
-    //     printf("thread%d %f\n", i, result[i]);
-    // }
-
-    // free(pids);
-    // free(x);
-    // free(y);
-    // free(tid);
-    // free(arg);
-    // free(result);
-    
+int main()
+{
+    group_auth();
     return 0;
 }

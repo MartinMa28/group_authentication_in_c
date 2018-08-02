@@ -199,6 +199,7 @@ void group_auth()
             n--;
         }
         
+        printf("\nBroadcast results:\n");
         FILE *fptr_read;
         fptr_read = fopen("data.bin", "rb");
         if(fptr_read == NULL)
@@ -240,14 +241,15 @@ void group_auth()
             pthread_join(tid[i], NULL);
         }
 
+        printf("\nLagrange interpolation results:\n");
         for(i = 0; i < term; i++)
         {
-            double sub = const_coef - result[i];
-            if(abs(sub) < 0.0001)
-            {
-                printf("thread%d is authenticated, ", i);
-            }
-            printf("thread%d %f, sub %f\n", i, result[i], sub);
+            // double sub = const_coef - result[i];
+            // if(abs(sub) < 0.0001)
+            // {
+            //     printf("thread%d is authenticated, ", i);
+            // }
+            printf("process %d: %f", i, result[i]);
         }
         printf("group authentication finished, press r to authenticate again: ");
         scanf(" %c", &leap);

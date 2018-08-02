@@ -249,9 +249,9 @@ void group_auth()
             // {
             //     printf("thread%d is authenticated, ", i);
             // }
-            printf("process %d: %f", i, result[i]);
+            printf("process %d: %f\n", i, result[i]);
         }
-        printf("group authentication finished, press r to authenticate again: ");
+        printf("\ngroup authentication finished, press r to authenticate again: ");
         scanf(" %c", &leap);
         if(leap != 'r')
         {
